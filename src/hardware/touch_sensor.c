@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include "freedom.h"
 #include "common.h"
+#include "touch_sensor.h"
 
 #define NCHANNELS 16
 static volatile uint16_t raw_counts[NCHANNELS];

@@ -5,7 +5,7 @@
 //
 
 #include "../hardware/freedom.h"
-#include "../hardware/common.h"
+#include "ring_buffer.h"
 
 
 inline void buf_reset(RingBuffer *buf, int size)

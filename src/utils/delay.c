@@ -5,7 +5,7 @@
 //
 
 #include "../hardware/freedom.h"
-#include "../hardware/common.h"
+#include "delay.h"
 
 // delay(ms) -- Spin wait delay (in ms)
 //              Note:  uses low power timer (LPTMR)

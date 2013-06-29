@@ -4,10 +4,14 @@
 //  Copyright (c) 2012-2013 Andrew Payne <andy@payne.org>
 //
 
-#include "freedom.h"
-#include "common.h"
 #include <stdio.h>
 #include <string.h>
+#include "freedom.h"
+#include "common.h"
+#include "_startup.h"
+#include "rgb_led.h"
+#include "../utils/delay.h"
+
 
 void _reset_init(void)    __attribute__((naked, aligned(8)));
 extern void _start(void);                   // newlib C lib initialization

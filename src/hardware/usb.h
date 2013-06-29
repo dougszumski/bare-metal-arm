@@ -205,3 +205,6 @@ typedef struct _USB_CDC_CALL_MGT_FN_DSC {
     uint8_t     bDataInterface;
 } __attribute__((packed)) USB_CDC_CALL_MGT_FN_DSC;
 
+void usb_init(void);
+void usb_dump(void);
+

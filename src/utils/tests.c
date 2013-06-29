@@ -6,6 +6,7 @@
 
 #include "../hardware/freedom.h"
 #include "../hardware/common.h"
+#include "tests.h"
 #include <assert.h>
 
 extern char *_sbrk(int len);

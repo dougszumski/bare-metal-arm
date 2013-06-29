@@ -5,7 +5,9 @@
 //
 
 #include "freedom.h"
+#include "uart.h"
 #include "common.h"
+#include "../utils/ring_buffer.h"
 
 // Circular buffers for transmit and receive
 #define BUFLEN 128

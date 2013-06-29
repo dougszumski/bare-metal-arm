@@ -8,8 +8,4 @@
 
 #define CORE_CLOCK          48000000    // Core clock speed
 
-static inline void RGB_LED(int red, int green, int blue) {
-    TPM2_C0V  = red;
-    TPM2_C1V  = green;
-    TPM0_C1V  = blue;
-}
+

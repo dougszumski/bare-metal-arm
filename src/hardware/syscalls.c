@@ -8,6 +8,7 @@
 #include "freedom.h"
 #include <sys/stat.h>
 #include "common.h"
+#include "uart.h"
 
 int _close(int file) { return -1; }
 int _isatty(int file) { return 1; }
