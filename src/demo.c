@@ -6,7 +6,6 @@
 
 #include <stdio.h>
 #include "hardware/freedom.h"
-#include "hardware/common.h"
 #include "hardware/rgb_led.h"
 #include "hardware/uart.h"
 #include "hardware/mma8451.h"

@@ -7,7 +7,7 @@
 
 #include "freedom.h"
 #include <sys/stat.h>
-#include "common.h"
+#include "_startup.h"
 #include "uart.h"
 
 int _close(int file) { return -1; }

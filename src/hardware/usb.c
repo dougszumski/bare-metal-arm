@@ -8,8 +8,8 @@
 #include <stdio.h>
 #include <string.h>
 #include "freedom.h"
-#include "common.h"
 #include "usb.h"
+#include "irq.h"
 
 // *******************************************************
 //  TODO:  INCOMPLETE, work in progress

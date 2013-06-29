@@ -5,7 +5,6 @@
 //
 
 #include "../hardware/freedom.h"
-#include "../hardware/common.h"
 #include "tests.h"
 #include <assert.h>
 
