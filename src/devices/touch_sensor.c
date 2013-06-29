@@ -5,8 +5,8 @@
 //
 
 #include <stdio.h>
-#include "freedom.h"
-#include "irq.h"
+#include "../system/freedom.h"
+#include "../system/irq.h"
 #include "touch_sensor.h"
 
 #define NCHANNELS 16

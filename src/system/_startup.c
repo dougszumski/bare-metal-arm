@@ -8,7 +8,7 @@
 #include <string.h>
 #include "freedom.h"
 #include "_startup.h"
-#include "rgb_led.h"
+#include "../devices/rgb_led.h"
 #include "../utils/delay.h"
 
 

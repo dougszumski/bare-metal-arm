@@ -5,13 +5,15 @@
 //
 
 #include <stdio.h>
-#include "hardware/freedom.h"
-#include "hardware/rgb_led.h"
-#include "hardware/uart.h"
-#include "hardware/mma8451.h"
-#include "hardware/touch_sensor.h"
+
+#include "system/freedom.h"
+#include "system/uart.h"
 #include "utils/tests.h"
 #include "utils/delay.h"
+#include "devices/rgb_led.h"
+#include "devices/mma8451.h"
+#include "devices/touch_sensor.h"
+
 
 extern char *_sbrk(int len);
 

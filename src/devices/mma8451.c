@@ -6,9 +6,9 @@
 
 // Based on demo example from Freescale
 
-#include "freedom.h"
+#include "../system/freedom.h"
 #include "mma8451.h"
-#include "i2c.h"
+#include "../system/i2c.h"
 #include "../utils/delay.h"
 
 

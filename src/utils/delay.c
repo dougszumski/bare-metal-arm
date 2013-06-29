@@ -4,7 +4,7 @@
 //  Copyright (c) 2012-2013 Andrew Payne <andy@payne.org>
 //
 
-#include "../hardware/freedom.h"
+#include "../system/freedom.h"
 #include "delay.h"
 
 // delay(ms) -- Spin wait delay (in ms)
