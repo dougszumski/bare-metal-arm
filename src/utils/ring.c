@@ -4,8 +4,9 @@
 //  Copyright (c) 2012-2013 Andrew Payne <andy@payne.org>
 //
 
-#include "freedom.h"
-#include "common.h"
+#include "../hardware/freedom.h"
+#include "../hardware/common.h"
+
 
 inline void buf_reset(RingBuffer *buf, int size)
 {

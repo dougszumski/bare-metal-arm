@@ -5,8 +5,8 @@
 //
 
 #include <stdio.h>
-#include "freedom.h"
-#include "common.h"
+#include "hardware/freedom.h"
+#include "hardware/common.h"
 
 extern char *_sbrk(int len);
 

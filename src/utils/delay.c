@@ -4,8 +4,8 @@
 //  Copyright (c) 2012-2013 Andrew Payne <andy@payne.org>
 //
 
-#include "freedom.h"
-#include "common.h"
+#include "../hardware/freedom.h"
+#include "../hardware/common.h"
 
 // delay(ms) -- Spin wait delay (in ms)
 //              Note:  uses low power timer (LPTMR)

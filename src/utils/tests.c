@@ -4,8 +4,8 @@
 //  Copyright (c) 2012-2013 Andrew Payne <andy@payne.org>
 //
 
-#include "freedom.h"
-#include "common.h"
+#include "../hardware/freedom.h"
+#include "../hardware/common.h"
 #include <assert.h>
 
 extern char *_sbrk(int len);
