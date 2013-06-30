@@ -1,5 +1,4 @@
 
-
 // USB standard request codes
 #define mGET_STATUS           0
 #define mCLR_FEATURE          1
@@ -25,65 +24,65 @@
 
 // USB setup packet structure (assumes compiler is little endian!)
 typedef struct {
-    uint8_t     bmRequestType;
-    uint8_t     bRequest;
-    uint16_t    wValue;
-    uint16_t    wIndex;
-    uint16_t    wLength;
+	uint8_t bmRequestType;
+	uint8_t bRequest;
+	uint16_t wValue;
+	uint16_t wIndex;
+	uint16_t wLength;
 } USB_SETUP;
 
 // Device descriptor
 typedef struct {
-    uint8_t     bLength;
-    uint8_t     bDscType;
-    uint16_t    bcdUSB;
-    uint8_t     bDevCls;
-    uint8_t     bDevSubCls;    
-    uint8_t     bDevProtocol;
-    uint8_t     bMaxPktSize0;  
-    uint16_t    idVendor;      
-    uint16_t    idProduct;
-    uint16_t    bcdDevice;
-    uint8_t     iMFR;          
-    uint8_t     iProduct;
-    uint8_t     iSerialNum;    
-    uint8_t     bNumCfg;
-} __attribute__((packed)) USB_DEV_DSC;
+	uint8_t bLength;
+	uint8_t bDscType;
+	uint16_t bcdUSB;
+	uint8_t bDevCls;
+	uint8_t bDevSubCls;
+	uint8_t bDevProtocol;
+	uint8_t bMaxPktSize0;
+	uint16_t idVendor;
+	uint16_t idProduct;
+	uint16_t bcdDevice;
+	uint8_t iMFR;
+	uint8_t iProduct;
+	uint8_t iSerialNum;
+	uint8_t bNumCfg;
+}__attribute__((packed)) USB_DEV_DSC;
 
 // Configuration descriptor
 typedef struct {
-    uint8_t     bLength;
-    uint8_t     bDscType;
-    uint16_t    wTotalLength;
-    uint8_t     bNumIntf;
-    uint8_t     bCfgValue;
-    uint8_t     iCfg;
-    uint8_t     bmAttributes;
-    uint8_t     bMaxPower;
-} __attribute__((packed)) USB_CFG_DSC;
+	uint8_t bLength;
+	uint8_t bDscType;
+	uint16_t wTotalLength;
+	uint8_t bNumIntf;
+	uint8_t bCfgValue;
+	uint8_t iCfg;
+	uint8_t bmAttributes;
+	uint8_t bMaxPower;
+}__attribute__((packed)) USB_CFG_DSC;
 
 // Interface descriptor
 typedef struct {
-    uint8_t     bLength;
-    uint8_t     bDscType;
-    uint8_t     bIntfNum;
-    uint8_t     bAltSetting;
-    uint8_t     bNumEPs;
-    uint8_t     bIntfCls;
-    uint8_t     bIntfSubCls;
-    uint8_t     bIntfProtocol;
-    uint8_t     iIntf;
-} __attribute__((packed)) USB_INTF_DSC;
+	uint8_t bLength;
+	uint8_t bDscType;
+	uint8_t bIntfNum;
+	uint8_t bAltSetting;
+	uint8_t bNumEPs;
+	uint8_t bIntfCls;
+	uint8_t bIntfSubCls;
+	uint8_t bIntfProtocol;
+	uint8_t iIntf;
+}__attribute__((packed)) USB_INTF_DSC;
 
 // Endpoint descriptor
 typedef struct {
-    uint8_t     bLength;
-    uint8_t     bDscType;
-    uint8_t     bEPAdr;
-    uint8_t     bmAttributes;
-    uint16_t    wMaxPktSize;
-    uint8_t     bInterval;
-} __attribute__((packed)) USB_EP_DSC;
+	uint8_t bLength;
+	uint8_t bDscType;
+	uint8_t bEPAdr;
+	uint8_t bmAttributes;
+	uint16_t wMaxPktSize;
+	uint8_t bInterval;
+}__attribute__((packed)) USB_EP_DSC;
 
 // --------------------------------------------------------------------------------------
 
@@ -130,13 +129,11 @@ typedef struct {
 /* Communication Interface Class Control Protocol Codes */
 #define V25TER                      0x01    // Common AT commands ("Hayes(TM)")
 
-
 /* Data Interface Class Codes */
 #define DATA_INTF                   0x0A
 
 /* Data Interface Class Protocol Codes */
 #define NO_PROTOCOL                 0x00    // No class specific protocol required
-
 
 /* Communication Feature Selector Codes */
 #define ABSTRACT_STATE              0x01
@@ -173,37 +170,37 @@ typedef struct {
 
 // CDC header functional descriptor
 typedef struct _USB_CDC_HEADER_FN_DSC {
-    uint8_t     bFNLength;
-    uint8_t     bDscType;
-    uint8_t     bDscSubType;
-    uint16_t    bcdCDC;
-} __attribute__((packed)) USB_CDC_HEADER_FN_DSC;
+	uint8_t bFNLength;
+	uint8_t bDscType;
+	uint8_t bDscSubType;
+	uint16_t bcdCDC;
+}__attribute__((packed)) USB_CDC_HEADER_FN_DSC;
 
 // CDC Abstract Control Management Functional Descriptor
 typedef struct _USB_CDC_ACM_FN_DSC {
-    uint8_t     bFNLength;
-    uint8_t     bDscType;
-    uint8_t     bDscSubType;
-    uint8_t     bmCapabilities;
-} __attribute__((packed)) USB_CDC_ACM_FN_DSC;
+	uint8_t bFNLength;
+	uint8_t bDscType;
+	uint8_t bDscSubType;
+	uint8_t bmCapabilities;
+}__attribute__((packed)) USB_CDC_ACM_FN_DSC;
 
 // CDC Union Functional Descriptor
 typedef struct _USB_CDC_UNION_FN_DSC {
-    uint8_t     bFNLength;
-    uint8_t     bDscType;
-    uint8_t     bDscSubType;
-    uint8_t     bMasterIntf;
-    uint8_t     bSaveIntf0;
-} __attribute__((packed)) USB_CDC_UNION_FN_DSC;
+	uint8_t bFNLength;
+	uint8_t bDscType;
+	uint8_t bDscSubType;
+	uint8_t bMasterIntf;
+	uint8_t bSaveIntf0;
+}__attribute__((packed)) USB_CDC_UNION_FN_DSC;
 
 // CDC Call Management Functional Descriptor
 typedef struct _USB_CDC_CALL_MGT_FN_DSC {
-    uint8_t     bFNLength;
-    uint8_t     bDscType;
-    uint8_t     bDscSubType;
-    uint8_t     bmCapabilities;
-    uint8_t     bDataInterface;
-} __attribute__((packed)) USB_CDC_CALL_MGT_FN_DSC;
+	uint8_t bFNLength;
+	uint8_t bDscType;
+	uint8_t bDscSubType;
+	uint8_t bmCapabilities;
+	uint8_t bDataInterface;
+}__attribute__((packed)) USB_CDC_CALL_MGT_FN_DSC;
 
 void usb_init(void);
 void usb_dump(void);

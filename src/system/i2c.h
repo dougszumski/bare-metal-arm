@@ -36,5 +36,4 @@ inline int i2c_write(I2C_MemMapPtr p, uint8_t data);
 
 inline void i2c_init(I2C_MemMapPtr p);
 
-
 #endif /* I2C_H_ */
