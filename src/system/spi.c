@@ -38,6 +38,8 @@ void spi_test(void) {
 		uart_read(&ch, 1);
 		printf("\n\rYou entered: %c \n\r\n\r", ch);
 
+		//Transmit but SPI
+
 	}
 }
 
