@@ -39,8 +39,17 @@ void spi_test(void) {
 		printf("\n\rYou entered: %c \n\r\n\r", ch);
 
 		//Transmit but SPI
+		spi_transmit(ch);
 
 	}
+}
+
+void spi_transmit(char ch) {
+
+	// Wait until the recieve buffer is empty.
+	while(!(SPI0_S && SPI_S_SPRF_MASK)) {};
+
+	SPI0_D = ch;
 }
 
 void spi_init(void) {

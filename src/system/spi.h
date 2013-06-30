@@ -10,6 +10,8 @@
 
 void spi_test(void);
 
+void spi_transmit(char ch);
+
 void spi_init(void);
 void spi1_dma_master_spi0_slave(void);
 void DMA0_IRQHandler(void);
