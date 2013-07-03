@@ -13,6 +13,12 @@
 #include "spi.h"
 #include "uart.h"
 
+// Reset pin position (port D)
+#define RESET 5
+
+// Macro to manipulate a specific pin
+#define GPIO_PIN(x)	((1) << (x))
+
 void spi_test(void) {
 
 	char ch = 'a';
@@ -26,8 +32,20 @@ void spi_test(void) {
 		//uart_read(&ch, 1);
 		//printf("\n\rYou entered: %c \n\r\n\r", ch);
 
+		//toggle reset pin
+
+
+		// Set output high
+		GPIOD_PSOR = GPIO_PIN(RESET);
+
 		//Transmit but SPI
-		spi_write(ch);
+				spi_write(ch);
+
+		// Set output low
+		GPIOD_PCOR = GPIO_PIN(RESET);
+
+		//Transmit but SPI
+						spi_write(ch);
 
 	}
 }
@@ -67,6 +85,7 @@ void spi_init(void) {
 	SPI0_C1 &= ~SPI_C1_SPE_MASK;
 
 	// Configure the SPI pins. p164
+	// DSE is drive stength enable.
 
 	//Use PTD0 as SPI0_SS_b
 	PORTD_PCR0 &= ~PORT_PCR_MUX_MASK;
@@ -83,6 +102,12 @@ void spi_init(void) {
 	//Use PTD1 as SPI0_SCK
 	PORTD_PCR1 &= ~PORT_PCR_MUX_MASK;
 	PORTD_PCR1 = PORT_PCR_MUX(2)|PORT_PCR_DSE_MASK;
+
+	//Use PTD5 as RST
+	PORTD_PCR5 &= ~PORT_PCR_MUX_MASK;
+	PORTD_PCR5 |= PORT_PCR_MUX(1)|PORT_PCR_DSE_MASK;
+	GPIOD_PSOR |= GPIO_PIN(RESET);    // Set initial output to high
+	GPIOD_PDDR |= GPIO_PIN(RESET);    // Set pin direction to output
 
 	// SPI0 configuration, As per p.684 of reference manual.
 
