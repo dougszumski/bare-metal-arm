@@ -13,86 +13,18 @@
 ** Descriptions:		The original version
 **
 **------------------------------------------------------------------------------------------------------
-** Modified by:			
-** Modified date:	
+** Modified by:			Doug Szumski
+** Modified date:		04/07/2013
 ** Version:
 ** Descriptions:		
 ********************************************************************************************************/
 
 /* Includes ------------------------------------------------------------------*/
-#include "GLCD.h"
-#include "AsciiLib.h"
+#include "../system/spi.h"
+#include "ili9320.h"
+#include "../lib/AsciiLib.h"
+#include "../utils/delay.h"
 
-/*******************************************************************************
-* Function Name  : Lcd_Configuration
-* Description    : Configures LCD Control lines
-* Input          : None
-* Output         : None
-* Return         : None
-* Attention		 : None
-*******************************************************************************/
-static void LCD_Configuration(void)
-{
- 	PINSEL_CFG_Type PinCfg;
-    SSP_CFG_Type SSP_ConfigStruct;
-	/*
-	 * Initialize SPI pin connect
-	 * P0.15 - LCD_CSB - used as GPIO
-	 * P0.16 - LCD_SCK
-	 * P0.17 - LCD_MISO
-	 * P0.18 - LCD_MOSI
-	 */
-	PinCfg.Funcnum = 2;
-	PinCfg.OpenDrain = 0;
-	PinCfg.Pinmode = 0;
-	PinCfg.Portnum = 0;
-	PinCfg.Pinnum = 15;
-	PINSEL_ConfigPin(&PinCfg);
-	PinCfg.Pinnum = 17;
-	PINSEL_ConfigPin(&PinCfg);
-	PinCfg.Pinnum = 18;
-	PINSEL_ConfigPin(&PinCfg);
-
-	PinCfg.Funcnum = 0;
-	PinCfg.Portnum = 0;
-	PinCfg.Pinnum = 16;
-	PINSEL_ConfigPin(&PinCfg);
-
-    /* P1.31 LCD_CSB is output */	 
-    GPIO_SetDir(CSB_PORT_NUM, ( (uint32_t) 1 << CSB_PIN_NUM ), 1);
-	GPIO_SetValue(CSB_PORT_NUM, ( (uint32_t) 1 << CSB_PIN_NUM ) );  
-
-	/* initialize SSP configuration structure to default */
-	SSP_ConfigStructInit(&SSP_ConfigStruct);
-
-	SSP_ConfigStruct.CPHA = SSP_CPHA_SECOND;
-	SSP_ConfigStruct.CPOL = SSP_CPOL_LO;
-	SSP_ConfigStruct.ClockRate = 25000000;
-
-	/* Initialize SSP peripheral with parameter given in structure above */
-	SSP_Init(LPC_SSP0, &SSP_ConfigStruct);
-	/* Enable SSP peripheral */
-	SSP_Cmd(LPC_SSP0, ENABLE);
-}
-
-/*******************************************************************************
-* Function Name  : LPC17xx_SPI_SendRecvByte
-* Description    : Send one byte then recv one byte of response
-* Input          : - byte_s: byte_s
-* Output         : None
-* Return         : None
-* Attention		 : None
-*******************************************************************************/
-unsigned char LPC17xx_SPI_SendRecvByte (unsigned char byte_s)
-{
-	/* wait for current SSP activity complete */
-	while (SSP_GetStatus(LPC_SSP0, SSP_STAT_BUSY) ==  SET);
-
-	SSP_SendData(LPC_SSP0, (unsigned short) byte_s);
-
-	while (SSP_GetStatus(LPC_SSP0, SSP_STAT_RXFIFO_NOTEMPTY) == RESET);
-	return (SSP_ReceiveData(LPC_SSP0));
-}
 
 /*******************************************************************************
 * Function Name  : LCD_WriteIndex
@@ -102,16 +34,12 @@ unsigned char LPC17xx_SPI_SendRecvByte (unsigned char byte_s)
 * Return         : None
 * Attention		 : None
 *******************************************************************************/
-void LCD_WriteIndex(unsigned char index)
+void LCD_WriteIndex(uint8_t index)
 {
-	SPI_CS_LOW;
-
-        /* SPI write data */
-	LPC17xx_SPI_SendRecvByte(SPI_START | SPI_WR | SPI_INDEX);   /* Write : RS = 0, RW = 0       */
-	LPC17xx_SPI_SendRecvByte(0);
-	LPC17xx_SPI_SendRecvByte(index);
-
-	SPI_CS_HIGH; 
+    /* SPI write data */
+	spi_send_recv(SPI_START | SPI_WR | SPI_INDEX);   /* Write : RS = 0, RW = 0       */
+	spi_send_recv(0);
+	spi_send_recv(index);
 }
 
 /*******************************************************************************
@@ -122,15 +50,11 @@ void LCD_WriteIndex(unsigned char index)
 * Return         : None
 * Attention		 : None
 *******************************************************************************/
-void LCD_WriteData( unsigned short data)
+void LCD_WriteData( uint16_t data)
 {
-	SPI_CS_LOW;
-
-	LPC17xx_SPI_SendRecvByte(SPI_START | SPI_WR | SPI_DATA);    /* Write : RS = 1, RW = 0       */
-	LPC17xx_SPI_SendRecvByte((data >>   8));                    /* Write D8..D15                */
-	LPC17xx_SPI_SendRecvByte((data & 0xFF));                    /* Write D0..D7                 */
-
-	SPI_CS_HIGH; 
+	spi_send_recv(SPI_START | SPI_WR | SPI_DATA);    /* Write : RS = 1, RW = 0       */
+	spi_send_recv((data >>   8));                    /* Write D8..D15                */
+	spi_send_recv((data & 0xFF));                    /* Write D0..D7                 */
 }
 
 /*******************************************************************************
@@ -143,7 +67,7 @@ void LCD_WriteData( unsigned short data)
 *******************************************************************************/
 void LCD_Write_Data_Start(void) 
 {
-  LPC17xx_SPI_SendRecvByte(SPI_START | SPI_WR | SPI_DATA);    /* Write : RS = 1, RW = 0       */
+	spi_send_recv(SPI_START | SPI_WR | SPI_DATA);    /* Write : RS = 1, RW = 0       */
 }
 
 /*******************************************************************************
@@ -154,10 +78,10 @@ void LCD_Write_Data_Start(void)
 * Return         : None
 * Attention		 : None
 *******************************************************************************/
-void LCD_Write_Data_Only( unsigned short data) 
+void LCD_Write_Data_Only( uint16_t data)
 {
-  LPC17xx_SPI_SendRecvByte((data >>   8));      /* Write D8..D15                */
-  LPC17xx_SPI_SendRecvByte((data & 0xFF));      /* Write D0..D7                 */
+	spi_send_recv((data >>   8));      /* Write D8..D15                */
+	spi_send_recv((data & 0xFF));      /* Write D0..D7                 */
 }
 
 /*******************************************************************************
@@ -168,19 +92,15 @@ void LCD_Write_Data_Only( unsigned short data)
 * Return         : return data
 * Attention	 : None
 *******************************************************************************/
-unsigned short LCD_ReadData(void)
+uint16_t LCD_ReadData(void)
 { 
-	unsigned short value;
+	uint16_t value;
 
-	SPI_CS_LOW;
-
-	LPC17xx_SPI_SendRecvByte(SPI_START | SPI_RD | SPI_DATA);    /* Read: RS = 1, RW = 1         */
-	LPC17xx_SPI_SendRecvByte(0);                                /* Dummy read 1                 */
-	value   = LPC17xx_SPI_SendRecvByte(0);                      /* Read D8..D15                 */
+	spi_send_recv(SPI_START | SPI_RD | SPI_DATA);    /* Read: RS = 1, RW = 1         */
+	spi_send_recv(0);                                /* Dummy read 1                 */
+	value   = spi_send_recv(0);                      /* Read D8..D15                 */
 	value <<= 8;
-	value  |= LPC17xx_SPI_SendRecvByte(0);                      /* Read D0..D7                  */
-
-	SPI_CS_HIGH; 
+	value  |= spi_send_recv(0);                      /* Read D0..D7                  */
 	
 	return value;
 }
@@ -194,12 +114,12 @@ unsigned short LCD_ReadData(void)
 * Return         : None
 * Attention		 : None
 *******************************************************************************/
-void LCD_WriteReg( unsigned short LCD_Reg, unsigned short LCD_RegValue)
+void LCD_WriteReg( uint16_t lcd_reg, uint16_t lcd_reg_value)
 {
 	/* Write 16-bit Index, then Write Reg */  
-	LCD_WriteIndex(LCD_Reg);         
+	LCD_WriteIndex(lcd_reg);
 	/* Write 16-bit Reg */
-	LCD_WriteData(LCD_RegValue);  
+	LCD_WriteData(lcd_reg_value);
 }
 
 /*******************************************************************************
@@ -210,16 +130,16 @@ void LCD_WriteReg( unsigned short LCD_Reg, unsigned short LCD_RegValue)
 * Return         : LCD Register Value.
 * Attention		 : None
 *******************************************************************************/
-unsigned short LCD_ReadReg( unsigned short LCD_Reg)
+uint16_t LCD_ReadReg( uint16_t lcd_reg)
 {
-	unsigned short LCD_RAM;
+	uint16_t lcd_ram;
 	
 	/* Write 16-bit Index (then Read Reg) */
-	LCD_WriteIndex(LCD_Reg);
+	LCD_WriteIndex(lcd_reg);
 	/* Read 16-bit Reg */
-	LCD_RAM = LCD_ReadData();
+	lcd_ram = LCD_ReadData();
     	
-	return LCD_RAM;
+	return lcd_ram;
 }
 
 /*******************************************************************************
@@ -231,47 +151,29 @@ unsigned short LCD_ReadReg( unsigned short LCD_Reg)
 * Return         : None
 * Attention		 : None
 *******************************************************************************/
-static void LCD_SetCursor( unsigned short Xpos, unsigned short Ypos )
+static void LCD_SetCursor( uint16_t Xpos, uint16_t Ypos )
 {
 	/* 0x9320 */
 	LCD_WriteReg(0x0020, Xpos );     
 	LCD_WriteReg(0x0021, Ypos );           
 }
 
-/*******************************************************************************
-* Function Name  : LCD_Delay
-* Description    : Delay Time
-* Input          : - nCount: Delay Time
-* Output         : None
-* Return         : None
-* Return         : None
-* Attention		 : None
-*******************************************************************************/
-static void delay_ms( unsigned short ms)    
-{ 
-	unsigned short i,j; 
-	for( i = 0; i < ms; i++ )
-	{ 
-		for( j = 0; j < 1141; j++ );
-	}
-} 
 
 /*******************************************************************************
-* Function Name  : LCD_Initializtion
-* Description    : Initialize TFT Controller.
+* Function Name  : LCD_Initialisation
+* Description    : Initialise TFT Controller.
 * Input          : None
 * Output         : None
 * Return         : None
 * Attention		 : None
 *******************************************************************************/
-void LCD_Initializtion(void)
+void initialise_controller(void)
 {
-	unsigned short DeviceCode;
+	uint16_t dev_code;
 	
-	LCD_Configuration();
-	DeviceCode = LCD_ReadReg(0x0000);		/* Read ID	*/	
+	dev_code = LCD_ReadReg(0x0000);		/* Read ID	*/
 	/* Different driver IC initialization*/
-	if( DeviceCode == 0x9320 || DeviceCode == 0x9300 )
+	if( dev_code == 0x9320 || dev_code == 0x9300 )
 	{
 		LCD_WriteReg(0x00,0x0000);
 		LCD_WriteReg(0x01,0x0100); /* Driver Output Contral */
@@ -330,22 +232,20 @@ void LCD_Initializtion(void)
 * Return         : None
 * Attention		 : None
 *******************************************************************************/
-void LCD_Clear( unsigned short Color)
+void LCD_Clear( uint16_t Color)
 {
-	unsigned int index=0;
+	uint8_t index = 0;
 	
 	LCD_SetCursor(0,0); 
 
 	LCD_WriteIndex(0x0022);
 
- 	SPI_CS_LOW; 
 	LCD_Write_Data_Start();
 
 	for( index = 0; index < MAX_X * MAX_Y; index++ )
 	{
 		LCD_Write_Data_Only(Color);
 	}
-	SPI_CS_HIGH;
 }
 
 /******************************************************************************
@@ -356,9 +256,9 @@ void LCD_Clear( unsigned short Color)
 * Return         : RGB Color value
 * Attention		 : None
 *******************************************************************************/
-static unsigned short LCD_BGR2RGB( unsigned short color)
+static uint16_t LCD_BGR2RGB( uint16_t color)
 {
-	unsigned short  r, g, b, rgb;
+	uint16_t  r, g, b, rgb;
 	
 	b = ( color>>0 )  & 0x1f;
 	g = ( color>>5 )  & 0x3f;
@@ -378,9 +278,9 @@ static unsigned short LCD_BGR2RGB( unsigned short color)
 * Return         : Screen Color
 * Attention		 : None
 *******************************************************************************/
-unsigned short LCD_GetPoint( unsigned short Xpos, unsigned short Ypos)
+uint16_t LCD_GetPoint( uint16_t Xpos, uint16_t Ypos)
 {
-	unsigned short dummy;
+	uint16_t dummy;
 	
 	LCD_SetCursor(Xpos,Ypos);
 
@@ -401,7 +301,7 @@ unsigned short LCD_GetPoint( unsigned short Xpos, unsigned short Ypos)
 * Return         : None
 * Attention		 : None
 *******************************************************************************/
-void LCD_SetPoint( unsigned short Xpos, unsigned short Ypos, unsigned short point)
+void LCD_SetPoint( uint16_t Xpos, uint16_t Ypos, uint16_t point)
 {
 	if( Xpos >= MAX_X || Ypos >= MAX_Y )
 	{
@@ -528,7 +428,7 @@ void PutChar( uint16_t Xpos, uint16_t Ypos, uint8_t ASCI, uint16_t charColor, ui
         tmp_char = buffer[i];
         for( j=0; j<8; j++ )
         {
-            if( (tmp_char >> 7 - j) & 0x01 == 0x01 )
+            if( ((tmp_char >> (7 - j)) & 0x01) == 0x01 )
             {
                 LCD_SetPoint( Xpos + j, Ypos + i, charColor );  /* Character color */
             }
@@ -576,7 +476,3 @@ void GUI_Text(uint16_t Xpos, uint16_t Ypos, uint8_t *str,uint16_t Color, uint16_
     }
     while ( *str != 0 );
 }
-
-/*********************************************************************************************************
-      END FILE
-*********************************************************************************************************/

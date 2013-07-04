@@ -13,8 +13,8 @@
 ** Descriptions:		The original version
 **
 **------------------------------------------------------------------------------------------------------
-** Modified by:			
-** Modified date:	
+** Modified by:			Doug Szumski
+** Modified date:		04/07/2013
 ** Version:
 ** Descriptions:		
 ********************************************************************************************************/
@@ -22,12 +22,9 @@
 #ifndef __GLCD_H 
 #define __GLCD_H
 
-/* Includes ------------------------------------------------------------------*/
-#include "lpc17xx_ssp.h"
-#include "lpc17xx_gpio.h"
-#include "lpc17xx_pinsel.h"
+#include <stdio.h>
+#include "../system/freedom.h"
 
-/* Private define ------------------------------------------------------------*/
 #define MAX_X  240
 #define MAX_Y  320   
 
@@ -37,14 +34,6 @@
 #define SPI_DATA    (0x02)              /* RS bit 1 within start byte         */
 #define SPI_INDEX   (0x00)              /* RS bit 0 within start byte         */
  
-/* PORT number that /CS pin assigned on */
-#define CSB_PORT_NUM	0
-/* PIN number that  /CS pin assigned on */
-#define CSB_PIN_NUM		16
-
-#define SPI_CS_LOW    GPIO_ClearValue(CSB_PORT_NUM, ( (uint32_t)1 << CSB_PIN_NUM ) )   
-#define SPI_CS_HIGH   GPIO_SetValue(CSB_PORT_NUM, ( (uint32_t) 1 << CSB_PIN_NUM ) )   
-
 /* LCD color */
 #define White          0xFFFF
 #define Black          0x0000
@@ -72,17 +61,14 @@
 (( green >> 2 ) << 5  ) | \
 ( blue  >> 3 ))
 
-/* Private function prototypes -----------------------------------------------*/
-void LCD_Initializtion(void);
+void initialise_controller(void);
 void LCD_Clear(uint16_t Color);
 uint16_t LCD_GetPoint(uint16_t Xpos,uint16_t Ypos);
 void LCD_SetPoint(uint16_t Xpos,uint16_t Ypos,uint16_t point);
 void LCD_DrawLine( uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1 , uint16_t color );
 void PutChar( uint16_t Xpos, uint16_t Ypos, uint8_t ASCI, uint16_t charColor, uint16_t bkColor );
 void GUI_Text(uint16_t Xpos, uint16_t Ypos, uint8_t *str,uint16_t Color, uint16_t bkColor);
+uint16_t LCD_ReadReg( uint16_t LCD_Reg);
 
 #endif 
 
-/*********************************************************************************************************
-      END FILE
-*********************************************************************************************************/

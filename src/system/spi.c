@@ -12,6 +12,8 @@
 #include "irq.h"
 #include "spi.h"
 #include "uart.h"
+#include "../devices/ili9320.h"
+#include "../utils/delay.h"
 
 // Reset pin position (port D)
 #define RESET 5
@@ -22,35 +24,32 @@
 void spi_test(void) {
 
 	char ch = 'a';
+	uint16_t dev_code;
 
 	spi_init();
 
-	printf("\n\rRunning SPI test\n\r");
+	printf("Running SPI test\n");
+
+	GPIOD_PSOR = GPIO_PIN(RESET);
+	delay_ms(1);
+	GPIOD_PCOR = GPIO_PIN(RESET);
+	delay_ms(10);
+	GPIOD_PSOR = GPIO_PIN(RESET);
+	delay_ms(50);
 
 	while (1) {
-		//printf("\n\rEnter character:\n\r\n\r");
+
+		//printf("\n\rEnter character:\n\r");
 		//uart_read(&ch, 1);
-		//printf("\n\rYou entered: %c \n\r\n\r", ch);
 
-		//toggle reset pin
+		delay_ms(100);
+		dev_code = LCD_ReadReg(0x0000);
 
-
-		// Set output high
-		GPIOD_PSOR = GPIO_PIN(RESET);
-
-		//Transmit but SPI
-				spi_write(ch);
-
-		// Set output low
-		GPIOD_PCOR = GPIO_PIN(RESET);
-
-		//Transmit but SPI
-						spi_write(ch);
-
+		printf("Register is : %hu \n\r", dev_code);
 	}
 }
 
-void spi_write(unsigned char byte) {
+void spi_write(uint8_t  byte) {
 
 	// Wait on the SPI transmit buffer empty flag. See p666.
 	while(!(SPI0_S && SPI_S_SPTEF_MASK)) {
@@ -60,7 +59,7 @@ void spi_write(unsigned char byte) {
 	SPI0_D = byte;
 }
 
-unsigned char spi_read(void) {
+uint8_t  spi_read(void) {
 
 	// Wait on the read buffer full flag. See p666.
 	while(!(SPI0_S && SPI_S_SPRF_MASK)) {
@@ -68,6 +67,25 @@ unsigned char spi_read(void) {
 
 	// Read the char from the SPI data register
 	return SPI0_D;
+}
+
+uint8_t spi_send_recv(uint8_t  byte) {
+
+	// Wait on the SPI transmit buffer empty flag. See p666.
+	while(!(SPI0_S && SPI_S_SPTEF_MASK)) {
+	};
+
+	// Write the char to the SPI data register
+	SPI0_D = byte;
+
+	// Wait on the read buffer full flag. See p666.
+	while(!(SPI0_S && SPI_S_SPRF_MASK)) {
+	};
+
+	// Read the char from the SPI data register
+	return SPI0_D;
+
+	//NOTE: Match flag is ignored for now.
 }
 
 void spi_init(void) {
@@ -85,7 +103,7 @@ void spi_init(void) {
 	SPI0_C1 &= ~SPI_C1_SPE_MASK;
 
 	// Configure the SPI pins. p164
-	// DSE is drive stength enable.
+	// DSE is drive strength enable.
 
 	//Use PTD0 as SPI0_SS_b
 	PORTD_PCR0 &= ~PORT_PCR_MUX_MASK;
@@ -111,14 +129,15 @@ void spi_init(void) {
 
 	// SPI0 configuration, As per p.684 of reference manual.
 
-	// Disable receive and mode fault interrupts
-	SPI0_C1 = 0x54;
+	// Disable receive and mode fault interrupts, enable SS pin function
+	SPI0_C1 = 0b01010110;
 
-	// SPI hardware interrupt match enabled
-	SPI0_C2 = 0x80;
+	// SPI hardware interrupt match enabled, disable mode fault function for the SS pin
+	SPI0_C2 = 0b10010000;
 
 	// Set prescale divisor to 1, baud-rate divisor to 2 (6.125Mhz)
-	SPI0_BR = 0x00;
+	//SPI0_BR = 0x00;
+	SPI0_BR = 0x40; //bps div = 10,---------0.8us
 	// NOTE: Clock is 12Mhz on scope.
 
 }

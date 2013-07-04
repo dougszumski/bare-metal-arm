@@ -9,7 +9,7 @@
 
 // delay(ms) -- Spin wait delay (in ms)
 //              Note:  uses low power timer (LPTMR)
-void delay(unsigned int length_ms) {
+void delay_ms(unsigned int length_ms) {
 	SIM_SCGC5 |= SIM_SCGC5_LPTMR_MASK;  // Make sure clock is enabled
 	LPTMR0_CSR = 0;                     // Reset LPTMR settings         
 	LPTMR0_CMR = length_ms;             // Set compare value (in ms)

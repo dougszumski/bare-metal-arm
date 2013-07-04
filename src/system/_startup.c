@@ -109,7 +109,7 @@ void fault(uint32_t pattern) {
 	for (;;) {
 		RGB_LED(pattern & 1 ? 100 : 0, 0, 0);        // Set RED led based on LSB
 		pattern = (pattern >> 1) | (pattern << 31);     // Rotate
-		delay(100);
+		delay_ms(100);
 	}
 }
 

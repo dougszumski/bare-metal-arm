@@ -14,6 +14,7 @@
 #include "devices/mma8451.h"
 #include "devices/touch_sensor.h"
 #include "system/spi.h"
+#include "devices/ili9320.h"
 
 extern char *_sbrk(int len);
 
@@ -31,7 +32,7 @@ int main(void) {
 
 	// Run tests
 	tests();
-	delay(500);
+	delay_ms(500);
 	RGB_LED(0, 100, 0);                       // White
 
 	// Welcome banner
@@ -45,7 +46,7 @@ int main(void) {
 	iprintf("%d bytes free\r\n", &i - heap_end);
 
 	spi_test();
-
+	//initialise_controller();
 
 	for (;;) {
 		iprintf("monitor> ");
