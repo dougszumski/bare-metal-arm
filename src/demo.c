@@ -15,6 +15,7 @@
 #include "devices/touch_sensor.h"
 #include "system/spi.h"
 #include "devices/ili9320.h"
+#include "lib/AsciiLib.h"
 
 extern char *_sbrk(int len);
 
@@ -45,27 +46,44 @@ int main(void) {
 
 void lcd_test(void) {
 
-	char ch = 'a';
+	char input;
 	uint16_t dev_code;
 
-	printf("Running LCD test\n\r");
+	//Screen cursor
+	uint8_t xCur = 0;
+	uint16_t yCur = 0;
 
+	printf("Running LCD test\n\r");
 	spi_init();
 	initialise_controller();
 
+	// Print the device code
 	dev_code = LCD_ReadReg(0x0000);
 	printf("Device code: 0x%04X\n\r", dev_code);
 
-	LCD_Clear(Cyan);
 
+	// Prints char on LCD screen.
 	while (1) {
 
 		printf("\n\rEnter character:\n\r");
-		uart_read(&ch, 1);
+		uart_read(&input, 1);
 
-		printf("Device code: 0x%04X\n\r", dev_code);
-		delay_ms(100);
+		GUI_Text(xCur,yCur, &input, Red, Black);
 
+		// Move the cursor
+		xCur += ASCII_X_PX;
+
+		// New line
+		if (xCur >= MAX_X) {
+			yCur += ASCII_Y_PX;
+			xCur = 0;
+		}
+
+		// Back to start
+		if (yCur >= MAX_Y) {
+			yCur = 0;
+			yCur = 0;
+		}
 	}
 }
 

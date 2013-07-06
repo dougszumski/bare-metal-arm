@@ -28,6 +28,8 @@
 /* Private define ------------------------------------------------------------*/
 //#define  ASCII_8X16_MS_Gothic
 #define  ASCII_8X16_System
+#define ASCII_X_PX 8
+#define ASCII_Y_PX 16
 
 /* Private function prototypes -----------------------------------------------*/
 void GetASCIICode(unsigned char* pBuffer,unsigned char ASCII);

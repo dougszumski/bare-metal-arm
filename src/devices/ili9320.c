@@ -468,13 +468,13 @@ void PutChar( uint16_t Xpos, uint16_t Ypos, uint8_t ASCI, uint16_t charColor, ui
 * Return         : None
 * Attention		 : None
 *******************************************************************************/
-void GUI_Text(uint16_t Xpos, uint16_t Ypos, uint8_t *str,uint16_t Color, uint16_t bkColor)
+void GUI_Text(uint16_t Xpos, uint16_t Ypos, char *str,uint16_t Color, uint16_t bkColor)
 {
-    uint8_t TempChar;
+    char temp_char;
     do
     {
-        TempChar = *str++;  
-        PutChar( Xpos, Ypos, TempChar, Color, bkColor );    
+        temp_char = *str++;  
+        PutChar( Xpos, Ypos, temp_char, Color, bkColor );    
         if( Xpos < MAX_X - 8 )
         {
             Xpos += 8;
