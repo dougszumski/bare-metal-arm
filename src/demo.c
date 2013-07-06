@@ -25,15 +25,15 @@ int main(void) {
 
 	// Initialize all modules
 	uart_init(115200);
-	accel_init();
-	touch_init((1 << 9) | (1 << 10));       // Channels 9 and 10
+	//accel_init();
+	//touch_init((1 << 9) | (1 << 10));       // Channels 9 and 10
 	// usb_init();
 	setvbuf(stdin, NULL, _IONBF, 0);        // No buffering
 
 	// Run tests
 	tests();
 	delay_ms(500);
-	RGB_LED(0, 100, 0);                       // White
+	RGB_LED(100, 000, 0);                       // White
 
 	// Welcome banner
 	iprintf("\r\n\r\n====== Freescale Freedom FRDM-LK25Z\r\n");

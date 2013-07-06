@@ -24,6 +24,8 @@
 #include "ili9320.h"
 #include "../lib/AsciiLib.h"
 #include "../utils/delay.h"
+// Macro to manipulate a specific pin
+#define GPIO_PIN(x)	((1) << (x))
 
 
 /*******************************************************************************
@@ -36,10 +38,13 @@
 *******************************************************************************/
 void LCD_WriteIndex(uint8_t index)
 {
+
+	GPIOA_PCOR = GPIO_PIN(CS); //Low
     /* SPI write data */
 	spi_send_recv(SPI_START | SPI_WR | SPI_INDEX);   /* Write : RS = 0, RW = 0       */
 	spi_send_recv(0);
 	spi_send_recv(index);
+	GPIOA_PSOR = GPIO_PIN(CS); //High
 }
 
 /*******************************************************************************
@@ -52,9 +57,11 @@ void LCD_WriteIndex(uint8_t index)
 *******************************************************************************/
 void LCD_WriteData( uint16_t data)
 {
+	GPIOA_PCOR = GPIO_PIN(CS); //Low
 	spi_send_recv(SPI_START | SPI_WR | SPI_DATA);    /* Write : RS = 1, RW = 0       */
 	spi_send_recv((data >>   8));                    /* Write D8..D15                */
 	spi_send_recv((data & 0xFF));                    /* Write D0..D7                 */
+	GPIOA_PSOR = GPIO_PIN(CS); //High
 }
 
 /*******************************************************************************
@@ -95,13 +102,13 @@ void LCD_Write_Data_Only( uint16_t data)
 uint16_t LCD_ReadData(void)
 { 
 	uint16_t value;
-
+	GPIOA_PCOR = GPIO_PIN(CS); //Low
 	spi_send_recv(SPI_START | SPI_RD | SPI_DATA);    /* Read: RS = 1, RW = 1         */
 	spi_send_recv(0);                                /* Dummy read 1                 */
 	value   = spi_send_recv(0);                      /* Read D8..D15                 */
 	value <<= 8;
 	value  |= spi_send_recv(0);                      /* Read D0..D7                  */
-	
+	GPIOA_PSOR = GPIO_PIN(CS); //High
 	return value;
 }
 
@@ -239,13 +246,14 @@ void LCD_Clear( uint16_t Color)
 	LCD_SetCursor(0,0); 
 
 	LCD_WriteIndex(0x0022);
-
+	GPIOA_PCOR = GPIO_PIN(CS); //Low
 	LCD_Write_Data_Start();
 
 	for( index = 0; index < MAX_X * MAX_Y; index++ )
 	{
 		LCD_Write_Data_Only(Color);
 	}
+	GPIOA_PSOR = GPIO_PIN(CS); //High
 }
 
 /******************************************************************************

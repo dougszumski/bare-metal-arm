@@ -10,19 +10,17 @@
 
 #include "freedom.h"
 
+// Reset pin position (port D)
+#define RESET 5
+#define CS 13
+
 // Test the SPI interface
 void spi_test(void);
 
 // Initialise SPI with DMA off
 void spi_init(void);
 
-// Write a byte
-void spi_write(uint8_t  ch);
-
-// Read a byte
-uint8_t spi_read(void);
-
 // Write then read a byte
-uint8_t  spi_send_recv(uint8_t  byte) ;
+uint8_t spi_send_recv(uint8_t tx);
 
 #endif /* SPI_DEMO_H_ */

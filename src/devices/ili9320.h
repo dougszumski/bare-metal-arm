@@ -25,6 +25,8 @@
 #include <stdio.h>
 #include "../system/freedom.h"
 
+
+
 #define MAX_X  240
 #define MAX_Y  320   
 
