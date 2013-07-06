@@ -16,7 +16,7 @@
 ** Modified by:			Doug Szumski
 ** Modified date:		04/07/2013
 ** Version:
-** Descriptions:		
+** Descriptions:		Ported to FRDM-KL25Z
 ********************************************************************************************************/
 
 /* Includes ------------------------------------------------------------------*/
@@ -24,9 +24,6 @@
 #include "ili9320.h"
 #include "../lib/AsciiLib.h"
 #include "../utils/delay.h"
-// Macro to manipulate a specific pin
-#define GPIO_PIN(x)	((1) << (x))
-
 
 /*******************************************************************************
 * Function Name  : LCD_WriteIndex
@@ -165,6 +162,15 @@ static void LCD_SetCursor( uint16_t Xpos, uint16_t Ypos )
 	LCD_WriteReg(0x0021, Ypos );           
 }
 
+void reset_controller(void) {
+
+	GPIOD_PSOR = GPIO_PIN(RESET);
+	delay_ms(50);
+	GPIOD_PCOR = GPIO_PIN(RESET);
+	delay_ms(50);
+	GPIOD_PSOR = GPIO_PIN(RESET);
+	delay_ms(100);
+}
 
 /*******************************************************************************
 * Function Name  : LCD_Initialisation
@@ -176,6 +182,8 @@ static void LCD_SetCursor( uint16_t Xpos, uint16_t Ypos )
 *******************************************************************************/
 void initialise_controller(void)
 {
+	reset_controller();
+
 	uint16_t dev_code;
 	
 	dev_code = LCD_ReadReg(0x0000);		/* Read ID	*/

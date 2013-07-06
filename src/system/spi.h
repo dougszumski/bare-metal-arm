@@ -14,8 +14,8 @@
 #define RESET 5
 #define CS 13
 
-// Test the SPI interface
-void spi_test(void);
+// Macro to manipulate a specific pin
+#define GPIO_PIN(x)	((1) << (x))
 
 // Initialise SPI with DMA off
 void spi_init(void);

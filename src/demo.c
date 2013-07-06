@@ -18,10 +18,12 @@
 
 extern char *_sbrk(int len);
 
+void lcd_test(void);
+void welcome(void);
+void input_demo(void);
+
 // Main program
 int main(void) {
-	char i;
-	char *heap_end;
 
 	// Initialize all modules
 	uart_init(115200);
@@ -32,8 +34,44 @@ int main(void) {
 
 	// Run tests
 	tests();
-	delay_ms(500);
-	RGB_LED(100, 000, 0);                       // White
+	delay_ms(100);
+	RGB_LED(100, 000, 0);
+
+	lcd_test();
+
+	while (1)
+		;
+}
+
+void lcd_test(void) {
+
+	char ch = 'a';
+	uint16_t dev_code;
+
+	printf("Running LCD test\n\r");
+
+	spi_init();
+	initialise_controller();
+
+	dev_code = LCD_ReadReg(0x0000);
+	printf("Device code: 0x%04X\n\r", dev_code);
+
+	LCD_Clear(Cyan);
+
+	while (1) {
+
+		printf("\n\rEnter character:\n\r");
+		uart_read(&ch, 1);
+
+		printf("Device code: 0x%04X\n\r", dev_code);
+		delay_ms(100);
+
+	}
+}
+
+void welcome(void) {
+	char i;
+	char *heap_end;
 
 	// Welcome banner
 	iprintf("\r\n\r\n====== Freescale Freedom FRDM-LK25Z\r\n");
@@ -44,9 +82,9 @@ int main(void) {
 	iprintf("Stack: %p to %p (%d bytes used)\r\n", &i, __StackTop,
 			(char *) __StackTop - &i);
 	iprintf("%d bytes free\r\n", &i - heap_end);
+}
 
-	spi_test();
-	//initialise_controller();
+void input_demo(void) {
 
 	for (;;) {
 		iprintf("monitor> ");
