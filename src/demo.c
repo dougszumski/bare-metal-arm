@@ -16,6 +16,7 @@
 #include "system/spi.h"
 #include "devices/ili9320.h"
 #include "lib/AsciiLib.h"
+#include "system/pit.h"
 
 extern char *_sbrk(int len);
 
@@ -37,6 +38,8 @@ int main(void) {
 	tests();
 	delay_ms(100);
 	RGB_LED(100, 000, 0);
+
+	pit_init();
 
 	lcd_test();
 
